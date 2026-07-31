@@ -139,8 +139,6 @@ def main():
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CallbackQueryHandler(handle_query))
 
-    app.run_polling()
-
     WEBHOOK_URL = os.getenv("WEBHOOK_URL")
     if not WEBHOOK_URL:
         app.run_polling()
