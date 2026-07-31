@@ -141,6 +141,21 @@ def main():
 
     app.run_polling()
 
+    WEBHOOK_URL = os.getenv("WEBHOOK_URL")
+    if not WEBHOOK_URL:
+        app.run_polling()
+    else:
+        PORT = int(os.getenv("PORT"))
+        SECRET_TOKEN = os.getenv("SECRET_TOKEN")
+        app.run_webhook(
+            listen="0.0.0.0",
+            port=PORT,
+            secret_token=SECRET_TOKEN,
+            webhook_url=WEBHOOK_URL,
+            drop_pending_updates=True,
+            url_path="shagh-orders-bot",
+        )
+
 
 if __name__ == "__main__":
     main()
