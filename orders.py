@@ -78,8 +78,8 @@ TEXT_STEP2 = """
 """
 
 KB_CONTINUE = InlineKeyboardMarkup(
-    # [[InlineKeyboardButton("متابعة", callback_data="continue")]]
-    [[InlineKeyboardButton("كبسة مو شغالة", callback_data="stop")]]
+    [[InlineKeyboardButton("تحمست، متابعة 😁", callback_data="continue")]]
+    # [[InlineKeyboardButton("كبسة مو شغالة", callback_data="stop")]]
 )
 
 KB_CONFIRM_CANCEL = InlineKeyboardMarkup(
