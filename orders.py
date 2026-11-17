@@ -8,7 +8,7 @@ from telegram.ext import (
 import os
 from dotenv import load_dotenv
 
-load_dotenv();
+load_dotenv()
 
 TOKEN = os.getenv("BOT_TOKEN")
 ORDERS_CHAT_ID = "-1002993388534"
@@ -211,10 +211,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def edit_registered(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    usage = (
-        f"عدد المسجلين الحالي: {registered_count}\n"
-        "الاستخدام: /editRegistered 75"
-    )
+    usage = f"عدد المسجلين الحالي: {registered_count}\n" "الاستخدام: /editRegistered 75"
 
     if not context.args:
         await update.message.reply_text(usage)
@@ -302,7 +299,7 @@ def main():
     WEBHOOK_URL = os.getenv("WEBHOOK_URL")
     if not WEBHOOK_URL:
         app.run_polling()
-    else:editregistered
+    else:
         PORT = int(os.getenv("PORT"))
         SECRET_TOKEN = os.getenv("SECRET_TOKEN")
         app.run_webhook(
