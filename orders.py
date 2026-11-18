@@ -22,6 +22,27 @@ MAX_COUNT = 100000
 
 userState = {}
 
+USERS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "users.txt")
+ADMIN_ID = 7861055850
+
+
+def load_users():
+    if not os.path.exists(USERS_FILE):
+        return set()
+    with open(USERS_FILE, "r", encoding="utf-8") as f:
+        return {int(line) for line in f if line.strip().isdigit()}
+
+
+userIds = load_users()
+
+
+def add_user(user_id):
+    if user_id in userIds:
+        return
+    userIds.add(user_id)
+    with open(USERS_FILE, "a", encoding="utf-8") as f:
+        f.write(f"{user_id}\n")
+
 
 def save_count(value):
     with open(COUNTER_FILE, "w", encoding="utf-8") as f:
@@ -200,6 +221,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     username = f"@{user.username}" if user.username else f"ID: {user.id}"
 
     await context.bot.send_message(ASK_CHAT_ID, f"{user.full_name}\n{username}")
+    add_user(user.id)
 
     if not user.username:
         await update.message.reply_text(TEXT_USERNAME_WARNING)
@@ -288,12 +310,34 @@ async def handle_query(update: Update, context: ContextTypes.DEFAULT_TYPE):
         userState.pop(cid, None)
         await q.edit_message_text(TEXT_ORDER_CANCELLED)
 
+async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    if update.effective_user.id != ADMIN_ID:
+        return
+
+    text = update.message.text.partition(" ")[2].strip()
+    if not text:
+        await update.message.reply_text("الاستخدام: /broadcast نص الرسالة")
+        return
+
+    sent = 0
+    failed = 0
+    for uid in list(userIds):
+        try:
+            await context.bot.send_message(uid, text)
+            sent += 1
+        except Exception:
+            failed += 1
+        await asyncio.sleep(0.05)
+
+    await update.message.reply_text(f"تم الإرسال: {sent}\nفشل: {failed}")
+
 
 def main():
     app = Application.builder().token(TOKEN).build()
 
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("editregistered", edit_registered))
+    app.add_handler(CommandHandler("broadcast", broadcast))
     app.add_handler(CallbackQueryHandler(handle_query))
 
     WEBHOOK_URL = os.getenv("WEBHOOK_URL")
