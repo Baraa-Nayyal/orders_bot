@@ -28,6 +28,7 @@ ADMIN_ID = 7861055850
 
 def load_users():
     if not os.path.exists(USERS_FILE):
+        open(USERS_FILE, "a", encoding="utf-8").close()
         return set()
     with open(USERS_FILE, "r", encoding="utf-8") as f:
         return {int(line) for line in f if line.strip().isdigit()}
